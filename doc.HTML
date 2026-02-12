@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enterprise Contract System - ECS</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,Segoe UI,sans-serif}
+
+body{
+background:linear-gradient(135deg,#0f172a,#1e293b);
+min-height:100vh;
+padding:40px;
+color:white;
+}
+
+.container{
+max-width:1400px;
+margin:auto;
+background:#111827;
+border-radius:30px;
+padding:40px;
+box-shadow:0 50px 100px rgba(0,0,0,0.7);
+animation:fadeIn 1s ease;
+}
+
+@keyframes fadeIn{
+from{opacity:0;transform:translateY(20px)}
+to{opacity:1;transform:translateY(0)}
+}
+
+.header{
+text-align:center;
+margin-bottom:40px;
+}
+
+.header h1{
+font-size:32px;
+font-weight:600;
+letter-spacing:1px;
+}
+
+.header p{
+color:#9ca3af;
+margin-top:8px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:40px;
+}
+
+.card{
+background:#1f2937;
+padding:30px;
+border-radius:20px;
+transition:0.3s;
+}
+
+.card:hover{
+transform:translateY(-5px);
+box-shadow:0 25px 50px rgba(0,0,0,0.6);
+}
+
+label{
+font-size:13px;
+color:#cbd5e1;
+display:block;
+margin-top:10px;
+}
+
+input,select,textarea{
+width:100%;
+padding:11px;
+margin-top:6px;
+border-radius:12px;
+border:none;
+background:#374151;
+color:white;
+transition:0.2s;
+}
+
+input:focus,textarea:focus{
+outline:none;
+background:#4b5563;
+}
+
+textarea{resize:none;height:100px}
+
+button{
+width:100%;
+padding:14px;
+margin-top:15px;
+border:none;
+border-radius:14px;
+background:#3b82f6;
+color:white;
+font-weight:600;
+cursor:pointer;
+transition:0.3s;
+}
+
+button:hover{
+background:#2563eb;
+transform:scale(1.02);
+}
+
+/* A4 Preview */
+.preview{
+background:white;
+color:black;
+width:100%;
+min-height:700px;
+padding:60px;
+border-radius:15px;
+font-family:Times New Roman, serif;
+line-height:1.6;
+box-shadow:0 10px 40px rgba(0,0,0,0.3);
+overflow:auto;
+}
+
+.preview h2{
+text-align:center;
+margin-bottom:10px;
+}
+
+.preview .meta{
+font-size:13px;
+margin-bottom:20px;
+}
+
+.preview hr{
+margin:20px 0;
+}
+
+.signature{
+margin-top:60px;
+display:flex;
+justify-content:space-between;
+}
+
+.hidden{display:none}
+</style>
+</head>
+<body>
+
+<div class="container">
+<div class="header">
+<h1>DokuPro</h1>
+<p>Pro MODE • Legal Structure • Unique ID • Professional PDF</p>
+</div>
+
+<div class="grid">
+
+<div class="card">
+
+<label>Tipi i Kontratës</label>
+<select id="type" onchange="switchTemplate()">
+<option value="pune">Kontratë Pune</option>
+<option value="qira">Kontratë Qiraje</option>
+<option value="sherbim">Kontratë Shërbimi</option>
+</select>
+
+<label>Emri i Kompanisë</label>
+<input type="text" id="company">
+
+<label>Pala 1</label>
+<input type="text" id="party1">
+
+<label>Pala 2</label>
+<input type="text" id="party2">
+
+<label>Data Fillimit</label>
+<input type="date" id="start">
+
+<label>Kohëzgjatja</label>
+<input type="text" id="duration">
+
+<div id="puneFields">
+<label>Pozita</label>
+<input type="text" id="position">
+<label>Paga Mujore (€)</label>
+<input type="number" id="salary">
+</div>
+
+<div id="qiraFields" class="hidden">
+<label>Adresa Pronës</label>
+<input type="text" id="property">
+<label>Qiraja Mujore (€)</label>
+<input type="number" id="rent">
+</div>
+
+<div id="sherbimFields" class="hidden">
+<label>Lloji i Shërbimit</label>
+<input type="text" id="service">
+<label>Pagesa Totale (€)</label>
+<input type="number" id="payment">
+</div>
+
+<label>Kushte Shtesë</label>
+<textarea id="terms"></textarea>
+
+<button onclick="generateContract()">Parashiko Kontratën</button>
+<button onclick="downloadPDF()">Shkarko PDF</button>
+
+</div>
+
+<div class="preview" id="preview">
+<h2>Parashikimi i Kontratës</h2>
+<p>Plotëso formën dhe kliko Parashiko Kontratën.</p>
+</div>
+
+</div>
+</div>
+
+<script>
+let contractID="";
+let contractPlainText="";
+
+function generateID(){
+const year=new Date().getFullYear();
+const random=Math.floor(100000+Math.random()*900000);
+return `CTR-${year}-${random}`;
+}
+
+function switchTemplate(){
+document.getElementById("puneFields").classList.add("hidden");
+document.getElementById("qiraFields").classList.add("hidden");
+document.getElementById("sherbimFields").classList.add("hidden");
+document.getElementById(document.getElementById("type").value+"Fields").classList.remove("hidden");
+}
+
+function generateContract(){
+
+const company=document.getElementById("company").value.trim();
+const party1=document.getElementById("party1").value.trim();
+const party2=document.getElementById("party2").value.trim();
+const start=document.getElementById("start").value;
+const duration=document.getElementById("duration").value.trim();
+
+if(!company || !party1 || !party2){
+alert("Plotëso fushat kryesore!");
+return;
+}
+
+contractID=generateID();
+
+let body="";
+const type=document.getElementById("type").value;
+
+if(type==="pune"){
+body=`
+<h2>KONTRATË PUNE</h2>
+<div class="meta"><b>Nr:</b> ${contractID}<br><b>Data:</b> ${start}</div>
+<hr>
+<p><b>Neni 1 – Palët:</b> Kjo kontratë lidhet ndërmjet ${party1} dhe ${party2}.</p>
+<p><b>Neni 2 – Pozita:</b> ${position.value}</p>
+<p><b>Neni 3 – Paga:</b> ${salary.value} € në muaj.</p>
+<p><b>Neni 4 – Kohëzgjatja:</b> ${duration}</p>
+<p><b>Neni 5 – Detyrimet:</b> Palët angazhohen të respektojnë legjislacionin në fuqi.</p>
+`;
+}
+
+if(type==="qira"){
+body=`
+<h2>KONTRATË QIRAJE</h2>
+<div class="meta"><b>Nr:</b> ${contractID}<br><b>Data:</b> ${start}</div>
+<hr>
+<p><b>Neni 1 – Palët:</b> ${party1} (Pronari) dhe ${party2} (Qiramarrësi).</p>
+<p><b>Neni 2 – Prona:</b> ${property.value}</p>
+<p><b>Neni 3 – Pagesa:</b> ${rent.value} € në muaj.</p>
+<p><b>Neni 4 – Kohëzgjatja:</b> ${duration}</p>
+<p><b>Neni 5 – Detyrimet:</b> Qiramarrësi ruan pronën sipas marrëveshjes.</p>
+`;
+}
+
+if(type==="sherbim"){
+body=`
+<h2>KONTRATË SHËRBIMI</h2>
+<div class="meta"><b>Nr:</b> ${contractID}<br><b>Data:</b> ${start}</div>
+<hr>
+<p><b>Neni 1 – Palët:</b> ${party1} dhe ${party2}</p>
+<p><b>Neni 2 – Shërbimi:</b> ${service.value}</p>
+<p><b>Neni 3 – Pagesa:</b> ${payment.value} €</p>
+<p><b>Neni 4 – Afati:</b> ${duration}</p>
+<p><b>Neni 5 – Përgjegjësitë:</b> Ofruesi garanton cilësi profesionale.</p>
+`;
+}
+
+const terms=document.getElementById("terms").value;
+
+document.getElementById("preview").innerHTML=`
+<h2>${company}</h2>
+${body}
+<hr>
+<p><b>Kushte Shtesë:</b><br>${terms}</p>
+<div class="signature">
+<div>_________________<br>${party1}</div>
+<div>_________________<br>${party2}</div>
+</div>
+`;
+
+contractPlainText=document.getElementById("preview").innerText;
+}
+
+async function downloadPDF(){
+if(!contractPlainText){
+alert("Gjenero kontratën!");
+return;
+}
+
+const {jsPDF}=window.jspdf;
+const doc=new jsPDF();
+doc.setFont("times");
+doc.setFontSize(18);
+doc.text("Enterprise Legal Document",105,20,null,null,"center");
+doc.line(20,25,190,25);
+
+doc.setFontSize(12);
+const lines=doc.splitTextToSize(contractPlainText,170);
+doc.text(lines,20,35);
+
+doc.save(contractID+".pdf");
+}
+</script>
+
+</body>
+</html>
