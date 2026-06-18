@@ -3,238 +3,385 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DokuPro SaaS Contract Builder</title>
+<title>ContractOS - AI Contract Platform</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
+
 :root{
-  --bg:#070b16;
-  --card:rgba(255,255,255,0.06);
-  --card2:rgba(255,255,255,0.1);
-  --text:#e5e7eb;
-  --muted:#9ca3af;
-  --accent:#3b82f6;
-  --radius:16px;
+--primary:#4f46e5;
+--secondary:#06b6d4;
+--glass:rgba(255,255,255,.08);
+--border:rgba(255,255,255,.15);
+--dark:#050816;
+--text:#ffffff;
+--muted:#9ca3af;
+--card:rgba(255,255,255,0.06);
+--card2:rgba(255,255,255,0.1);
 }
 
+/* RESET */
 *{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:Inter,Segoe UI,sans-serif;
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter',sans-serif;
 }
 
 body{
-  background: radial-gradient(circle at top,#111827,#05060d);
-  color:var(--text);
+background:#050816;
+color:white;
+overflow-x:hidden;
 }
 
-/* HEADER */
-header{
-  text-align:center;
-  padding:30px 20px;
+/* BACKGROUND */
+.bg{
+position:fixed;
+width:100%;
+height:100%;
+z-index:-1;
+background:
+radial-gradient(circle at 20% 20%,#4f46e530,transparent 35%),
+radial-gradient(circle at 80% 30%,#06b6d430,transparent 35%),
+radial-gradient(circle at 50% 80%,#8b5cf630,transparent 35%);
+filter:blur(80px);
+animation:move 12s infinite alternate;
 }
 
-header h1{
-  font-size:40px;
-  background:linear-gradient(90deg,#fff,#9ca3af);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
+@keyframes move{
+from{transform:translateY(-40px);}
+to{transform:translateY(40px);}
 }
 
-header p{
-  color:var(--muted);
-  margin-top:8px;
+/* NAV */
+nav{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:25px 8%;
+position:fixed;
+width:100%;
+top:0;
+backdrop-filter:blur(20px);
+background:rgba(0,0,0,.15);
+border-bottom:1px solid rgba(255,255,255,.08);
+z-index:1000;
 }
 
-/* LAYOUT */
+.logo{
+font-size:1.8rem;
+font-weight:900;
+background:linear-gradient(90deg,#4f46e5,#06b6d4);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+.nav-links{
+display:flex;
+gap:35px;
+}
+
+.nav-links a{
+color:#d1d5db;
+text-decoration:none;
+font-weight:500;
+}
+
+.cta{
+padding:14px 24px;
+background:linear-gradient(135deg,#4f46e5,#06b6d4);
+border-radius:14px;
+text-decoration:none;
+color:white;
+font-weight:700;
+}
+
+/* HERO */
+.hero{
+min-height:100vh;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:120px 8% 0;
+gap:80px;
+}
+
+.left{flex:1;}
+
+.badge{
+display:inline-flex;
+gap:10px;
+padding:10px 18px;
+background:var(--glass);
+border:1px solid var(--border);
+border-radius:50px;
+margin-bottom:25px;
+}
+
+.hero h1{
+font-size:5rem;
+font-weight:900;
+line-height:1;
+margin-bottom:25px;
+}
+
+.gradient{
+background:linear-gradient(90deg,#4f46e5,#06b6d4);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+.hero p{
+color:var(--muted);
+max-width:650px;
+margin-bottom:40px;
+font-size:1.2rem;
+}
+
+.actions{
+display:flex;
+gap:20px;
+}
+
+.btn-primary,.btn-secondary{
+padding:18px 32px;
+border-radius:16px;
+text-decoration:none;
+font-weight:700;
+}
+
+.btn-primary{
+background:linear-gradient(135deg,#4f46e5,#06b6d4);
+color:white;
+}
+
+.btn-secondary{
+background:var(--glass);
+border:1px solid var(--border);
+color:white;
+}
+
+/* TRUST */
+.trust{
+padding:60px 8%;
+text-align:center;
+}
+
+.trust h3{
+color:#6b7280;
+margin-bottom:40px;
+}
+
+.logos{
+display:flex;
+justify-content:center;
+gap:60px;
+flex-wrap:wrap;
+color:#9ca3af;
+font-weight:700;
+}
+
+/* BUILDER */
+.builder{
+padding:100px 8%;
+}
+
 .container{
-  max-width:1400px;
-  margin:auto;
-  padding:20px;
+max-width:1400px;
+margin:auto;
 }
 
 .grid{
-  display:grid;
-  grid-template-columns:420px 1fr;
-  gap:20px;
+display:grid;
+grid-template-columns:420px 1fr;
+gap:20px;
 }
 
-/* CARD */
 .card{
-  background:var(--card);
-  backdrop-filter: blur(16px);
-  border:1px solid rgba(255,255,255,0.08);
-  border-radius:var(--radius);
-  padding:20px;
-  transition:0.3s;
+background:var(--card);
+backdrop-filter:blur(16px);
+border:1px solid rgba(255,255,255,0.08);
+border-radius:16px;
+padding:20px;
 }
 
 .card:hover{
-  transform:translateY(-4px);
-  background:var(--card2);
+background:var(--card2);
+transform:translateY(-4px);
+transition:0.3s;
 }
 
 /* FORM */
 label{
-  font-size:12px;
-  color:var(--muted);
-  margin-top:10px;
-  display:block;
+font-size:12px;
+color:var(--muted);
+margin-top:10px;
+display:block;
 }
 
-input,select,textarea{
-  width:100%;
-  margin-top:6px;
-  padding:12px;
-  border-radius:12px;
-  border:none;
-  outline:none;
-  background:rgba(255,255,255,0.08);
-  color:white;
-  transition:0.2s;
+input,select{
+width:100%;
+margin-top:6px;
+padding:12px;
+border-radius:12px;
+border:none;
+background:rgba(255,255,255,0.08);
+color:white;
 }
 
-input:focus,textarea:focus{
-  background:rgba(255,255,255,0.14);
-  transform:scale(1.01);
-}
-
-/* CHECKBOXES */
-.checkbox{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  margin-top:10px;
-  font-size:14px;
-  color:#d1d5db;
-}
-
-.checkbox input{
-  width:16px;
-  height:16px;
-}
-
-/* BUTTON */
 button{
-  width:100%;
-  margin-top:12px;
-  padding:13px;
-  border:none;
-  border-radius:12px;
-  cursor:pointer;
-  font-weight:600;
-  transition:0.3s;
+width:100%;
+margin-top:12px;
+padding:13px;
+border:none;
+border-radius:12px;
+cursor:pointer;
+font-weight:600;
 }
 
 .primary{
-  background:linear-gradient(135deg,#3b82f6,#6366f1);
-  color:white;
+background:linear-gradient(135deg,#3b82f6,#6366f1);
+color:white;
 }
 
-.primary:hover{
-  transform:translateY(-2px);
-  box-shadow:0 10px 30px rgba(59,130,246,0.4);
+/* TERMS BOX FIX */
+.terms-box{
+margin-top:15px;
+padding:12px;
+border-radius:12px;
+background:rgba(255,255,255,0.04);
+border:1px solid rgba(255,255,255,0.06);
+}
+
+.section-title{
+margin:10px 0;
+font-size:12px;
+text-transform:uppercase;
+letter-spacing:1px;
+color:#9ca3af;
+}
+
+.checkbox{
+display:flex;
+align-items:center;
+gap:12px;
+padding:10px;
+margin-top:8px;
+border-radius:10px;
+cursor:pointer;
+transition:0.2s;
+}
+
+.checkbox:hover{
+background:rgba(255,255,255,0.06);
+}
+
+.checkbox input{
+width:16px;
+height:16px;
 }
 
 /* PREVIEW */
 .preview{
-  background:white;
-  color:black;
-  padding:50px;
-  border-radius:16px;
-  min-height:800px;
-  animation:fade 0.4s ease;
-}
-
-@keyframes fade{
-  from{opacity:0;transform:translateY(15px)}
-  to{opacity:1;transform:translateY(0)}
+background:white;
+color:black;
+padding:50px;
+border-radius:16px;
+min-height:700px;
 }
 
 /* MOBILE */
 @media(max-width:1000px){
-  .grid{grid-template-columns:1fr}
+.hero{flex-direction:column;text-align:center;}
+.hero h1{font-size:3rem;}
+.grid{grid-template-columns:1fr;}
+.nav-links{display:none;}
 }
+
 </style>
 </head>
 
 <body>
 
-<header>
-  <h1>DokuPro</h1>
-  <p>Modern Contract Builder • SaaS Level UI • PDF Generator</p>
-</header>
+<div class="bg"></div>
 
+<nav>
+<div class="logo">Digi-Tech</div>
+<a href="#builder" class="cta">Start Free</a>
+</nav>
+
+<section class="hero">
+<div class="left">
+<div class="badge">⚡ AI Powered Contract Automation</div>
+
+<h1>Build Contracts at <span class="gradient">Enterprise Speed</span></h1>
+
+<p>Generate NDAs, employment contracts, service agreements and legal documents using AI automation.</p>
+
+<div class="actions">
+<a href="#builder" class="btn-primary">Create Contract</a>
+<a href="#" class="btn-secondary">Watch Demo</a>
+</div>
+</div>
+</section>
+
+<section class="builder" id="builder">
 <div class="container">
 <div class="grid">
 
 <!-- FORM -->
 <div class="card">
 
-  <label>Party 1</label>
-  <input id="p1">
+<label>Party 1</label>
+<input id="p1">
 
-  <label>Party 2</label>
-  <input id="p2">
+<label>Party 2</label>
+<input id="p2">
 
-  <label>Contract Type</label>
-  <select id="type">
-    <option>Employment</option>
-    <option>Rental</option>
-    <option>Service</option>
-  </select>
+<label>Contract Type</label>
+<select id="type">
+<option>Employment</option>
+<option>Rental</option>
+<option>Service</option>
+</select>
 
-  <label>Start Date</label>
-  <input type="date" id="date">
+<label>Start Date</label>
+<input type="date" id="date">
 
-  <label>Duration</label>
-  <input id="duration">
+<label>Duration</label>
+<input id="duration">
 
-  <label>Payment (€)</label>
-  <input id="payment">
+<label>Payment (€)</label>
+<input id="payment">
 
-  <!-- OPTIONAL CLAUSES -->
-  <div class="checkbox">
-    <input type="checkbox" id="confidentiality">
-    <label>Confidentiality Clause</label>
-  </div>
+<div class="terms-box">
+<div class="section-title">Contract Templates</div>
 
-  <div class="checkbox">
-    <input type="checkbox" id="termination">
-    <label>Termination Clause</label>
-  </div>
+<label class="checkbox"><input type="checkbox" id="confidentiality"> Confidentiality Clause</label>
+<label class="checkbox"><input type="checkbox" id="termination"> Termination Clause</label>
+<label class="checkbox"><input type="checkbox" id="liability"> Liability Clause</label>
+<label class="checkbox"><input type="checkbox" id="governing"> Governing Law Clause</label>
+<label class="checkbox"><input type="checkbox" id="extra"> Additional Terms</label>
+</div>
 
-  <div class="checkbox">
-    <input type="checkbox" id="liability">
-    <label>Liability Clause</label>
-  </div>
-
-  <div class="checkbox">
-    <input type="checkbox" id="governing">
-    <label>Governing Law Clause</label>
-  </div>
-
-  <div class="checkbox">
-    <input type="checkbox" id="extra">
-    <label>Additional Terms Section</label>
-  </div>
-
-  <button class="primary" onclick="generate()">Generate Contract</button>
-  <button onclick="downloadPDF()">Download PDF</button>
+<button class="primary" onclick="generate()">Generate Contract</button>
+<button onclick="downloadPDF()">Download PDF</button>
 
 </div>
 
 <!-- PREVIEW -->
 <div class="preview" id="preview">
-  <h2>Contract Preview</h2>
+<h2>Contract Preview</h2>
 </div>
 
 </div>
 </div>
+</section>
 
 <script>
+
 let text="";
 let id="CTR-"+Date.now();
 
@@ -246,35 +393,32 @@ const payment=document.getElementById("payment").value;
 const date=document.getElementById("date").value;
 const duration=document.getElementById("duration").value;
 
-let contract=`<h2>CONTRACT AGREEMENT</h2>
-<p><b>${p1}</b> and <b>${p2}</b></p>
-<p>Date: ${date}</p>
-<p>Duration: ${duration}</p>
-<p>Payment: €${payment}</p>`;
+let contract=`CONTRACT AGREEMENT
 
-if(document.getElementById("confidentiality").checked){
-contract+=`<hr><p><b>Confidentiality:</b> Both parties agree to maintain strict confidentiality regarding all business information, data, documents, pricing, strategies, and any other sensitive material shared during the course of this agreement. Neither party shall disclose, share, publish, or use such information for any purpose outside the scope of this contract without prior written consent. This obligation remains valid during and after termination of the agreement.</p>`;
-}
+${p1} and ${p2}
+Date: ${date}
+Duration: ${duration}
+Payment: €${payment}
 
-if(document.getElementById("termination").checked){
-contract+=`<hr><p><b>Termination:</b> This agreement may be terminated by either party with written notice as specified in the contract terms. Immediate termination may occur in the event of a material breach, violation of obligations, fraud, or unlawful activity. Upon termination, both parties must settle all outstanding obligations, return confidential materials, and cease all use of shared resources or intellectual property related to this agreement.</p>`;
-}
+`;
 
-if(document.getElementById("liability").checked){
-contract+=`<hr><p><b>Liability:</b> Neither party shall be held liable for any indirect, incidental, special, or consequential damages arising from the performance or failure to perform under this agreement. Each party assumes responsibility for its own actions and obligations. Liability shall be limited to the total amount paid under this contract, unless otherwise required by applicable law or proven gross negligence or intentional misconduct.</p>`;
-}
+if(document.getElementById("confidentiality").checked)
+contract+="Confidentiality Clause: Both parties agree to maintain strict confidentiality regarding all business information, data, documents, pricing, strategies, and any other sensitive material shared during the course of this agreement. Neither party shall disclose, share, publish, or use such information for any purpose outside the scope of this contract without prior written consent. This obligation remains valid during and after termination of the agreement.\n\n";
 
-if(document.getElementById("governing").checked){
-contract+=`<hr><p><b>Governing Law:</b> This agreement shall be governed and interpreted in accordance with the laws and legal regulations of the jurisdiction agreed upon by both parties. Any disputes arising from or related to this contract shall be resolved under the applicable courts or arbitration systems within that jurisdiction. Both parties agree to submit to the legal authority of the selected governing region.</p>`;
-}
+if(document.getElementById("termination").checked)
+contract+="Termination Clause: This agreement may be terminated by either party with written notice as specified in the contract terms. Immediate termination may occur in the event of a material breach, violation of obligations, fraud, or unlawful activity. Upon termination, both parties must settle all outstanding obligations, return confidential materials, and cease all use of shared resources or intellectual property related to this agreement.\n\n";
 
-if(document.getElementById("extra").checked){
-contract+=`<hr><p><b>Additional Terms:</b>Any additional terms, modifications, or special conditions agreed upon by both parties shall be considered part of this contract when documented in writing. Verbal agreements shall not be considered legally binding unless confirmed in written form. Both parties agree that this section may include custom conditions related to payments, delivery, timelines, or responsibilities specific to the nature of this agreement.</p>`;
-}
+if(document.getElementById("liability").checked)
+contract+="Liability Clause: Neither party shall be held liable for any indirect, incidental, special, or consequential damages arising from the performance or failure to perform under this agreement. Each party assumes responsibility for its own actions and obligations. Liability shall be limited to the total amount paid under this contract, unless otherwise required by applicable law or proven gross negligence or intentional misconduct.\n\n";
 
-document.getElementById("preview").innerHTML=contract;
+if(document.getElementById("governing").checked)
+contract+="Governing Law Clause: This agreement shall be governed and interpreted in accordance with the laws and legal regulations of the jurisdiction agreed upon by both parties. Any disputes arising from or related to this contract shall be resolved under the applicable courts or arbitration systems within that jurisdiction. Both parties agree to submit to the legal authority of the selected governing region.\n\n";
 
-text=document.getElementById("preview").innerText;
+if(document.getElementById("extra").checked)
+contract+="Additional Terms: Any additional terms, modifications, or special conditions agreed upon by both parties shall be considered part of this contract when documented in writing. Verbal agreements shall not be considered legally binding unless confirmed in written form. Both parties agree that this section may include custom conditions related to payments, delivery, timelines, or responsibilities specific to the nature of this agreement.\n\n";
+
+document.getElementById("preview").innerText=contract;
+text=contract;
 }
 
 function downloadPDF(){
@@ -282,7 +426,6 @@ function downloadPDF(){
 const {jsPDF}=window.jspdf;
 const doc=new jsPDF();
 
-doc.setFont("times");
 doc.setFontSize(16);
 doc.text("Contract Document",105,20,null,null,"center");
 
@@ -291,6 +434,7 @@ doc.text(doc.splitTextToSize(text,170),20,35);
 
 doc.save(id+".pdf");
 }
+
 </script>
 
 </body>
