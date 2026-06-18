@@ -1,335 +1,295 @@
 <!DOCTYPE html>
-<html lang="sq">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Enterprise Contract System - ECS</title>
+<title>DokuPro SaaS Contract Builder</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,Segoe UI,sans-serif}
+:root{
+  --bg:#070b16;
+  --card:rgba(255,255,255,0.06);
+  --card2:rgba(255,255,255,0.1);
+  --text:#e5e7eb;
+  --muted:#9ca3af;
+  --accent:#3b82f6;
+  --radius:16px;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Inter,Segoe UI,sans-serif;
+}
 
 body{
-background:linear-gradient(135deg,#0f172a,#1e293b);
-min-height:100vh;
-padding:40px;
-color:white;
+  background: radial-gradient(circle at top,#111827,#05060d);
+  color:var(--text);
 }
 
+/* HEADER */
+header{
+  text-align:center;
+  padding:30px 20px;
+}
+
+header h1{
+  font-size:40px;
+  background:linear-gradient(90deg,#fff,#9ca3af);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+header p{
+  color:var(--muted);
+  margin-top:8px;
+}
+
+/* LAYOUT */
 .container{
-max-width:1400px;
-margin:auto;
-background:#111827;
-border-radius:30px;
-padding:40px;
-box-shadow:0 50px 100px rgba(0,0,0,0.7);
-animation:fadeIn 1s ease;
-}
-
-@keyframes fadeIn{
-from{opacity:0;transform:translateY(20px)}
-to{opacity:1;transform:translateY(0)}
-}
-
-.header{
-text-align:center;
-margin-bottom:40px;
-}
-
-.header h1{
-font-size:32px;
-font-weight:600;
-letter-spacing:1px;
-}
-
-.header p{
-color:#9ca3af;
-margin-top:8px;
+  max-width:1400px;
+  margin:auto;
+  padding:20px;
 }
 
 .grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:40px;
+  display:grid;
+  grid-template-columns:420px 1fr;
+  gap:20px;
 }
 
+/* CARD */
 .card{
-background:#1f2937;
-padding:30px;
-border-radius:20px;
-transition:0.3s;
+  background:var(--card);
+  backdrop-filter: blur(16px);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:var(--radius);
+  padding:20px;
+  transition:0.3s;
 }
 
 .card:hover{
-transform:translateY(-5px);
-box-shadow:0 25px 50px rgba(0,0,0,0.6);
+  transform:translateY(-4px);
+  background:var(--card2);
 }
 
+/* FORM */
 label{
-font-size:13px;
-color:#cbd5e1;
-display:block;
-margin-top:10px;
+  font-size:12px;
+  color:var(--muted);
+  margin-top:10px;
+  display:block;
 }
 
 input,select,textarea{
-width:100%;
-padding:11px;
-margin-top:6px;
-border-radius:12px;
-border:none;
-background:#374151;
-color:white;
-transition:0.2s;
+  width:100%;
+  margin-top:6px;
+  padding:12px;
+  border-radius:12px;
+  border:none;
+  outline:none;
+  background:rgba(255,255,255,0.08);
+  color:white;
+  transition:0.2s;
 }
 
 input:focus,textarea:focus{
-outline:none;
-background:#4b5563;
+  background:rgba(255,255,255,0.14);
+  transform:scale(1.01);
 }
 
-textarea{resize:none;height:100px}
+/* CHECKBOXES */
+.checkbox{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-top:10px;
+  font-size:14px;
+  color:#d1d5db;
+}
 
+.checkbox input{
+  width:16px;
+  height:16px;
+}
+
+/* BUTTON */
 button{
-width:100%;
-padding:14px;
-margin-top:15px;
-border:none;
-border-radius:14px;
-background:#3b82f6;
-color:white;
-font-weight:600;
-cursor:pointer;
-transition:0.3s;
+  width:100%;
+  margin-top:12px;
+  padding:13px;
+  border:none;
+  border-radius:12px;
+  cursor:pointer;
+  font-weight:600;
+  transition:0.3s;
 }
 
-button:hover{
-background:#2563eb;
-transform:scale(1.02);
+.primary{
+  background:linear-gradient(135deg,#3b82f6,#6366f1);
+  color:white;
 }
 
-/* A4 Preview */
+.primary:hover{
+  transform:translateY(-2px);
+  box-shadow:0 10px 30px rgba(59,130,246,0.4);
+}
+
+/* PREVIEW */
 .preview{
-background:white;
-color:black;
-width:100%;
-min-height:700px;
-padding:60px;
-border-radius:15px;
-font-family:Times New Roman, serif;
-line-height:1.6;
-box-shadow:0 10px 40px rgba(0,0,0,0.3);
-overflow:auto;
+  background:white;
+  color:black;
+  padding:50px;
+  border-radius:16px;
+  min-height:800px;
+  animation:fade 0.4s ease;
 }
 
-.preview h2{
-text-align:center;
-margin-bottom:10px;
+@keyframes fade{
+  from{opacity:0;transform:translateY(15px)}
+  to{opacity:1;transform:translateY(0)}
 }
 
-.preview .meta{
-font-size:13px;
-margin-bottom:20px;
+/* MOBILE */
+@media(max-width:1000px){
+  .grid{grid-template-columns:1fr}
 }
-
-.preview hr{
-margin:20px 0;
-}
-
-.signature{
-margin-top:60px;
-display:flex;
-justify-content:space-between;
-}
-
-.hidden{display:none}
 </style>
 </head>
+
 <body>
 
-<div class="container">
-<div class="header">
-<h1>DokuPro</h1>
-<p>Pro MODE • Legal Structure • Unique ID • Professional PDF</p>
-</div>
+<header>
+  <h1>DokuPro</h1>
+  <p>Modern Contract Builder • SaaS Level UI • PDF Generator</p>
+</header>
 
+<div class="container">
 <div class="grid">
 
+<!-- FORM -->
 <div class="card">
 
-<label>Contract Type</label>
-<select id="type" onchange="switchTemplate()">
-<option value="pune">Employment Contract</option>
-<option value="qira">Rental Agreement</option>
-<option value="sherbim">Service Agreement</option>
-</select>
+  <label>Party 1</label>
+  <input id="p1">
 
-<label>Company Name</label>
-<input type="text" id="company">
+  <label>Party 2</label>
+  <input id="p2">
 
-<label>Party 1</label>
-<input type="text" id="party1">
+  <label>Contract Type</label>
+  <select id="type">
+    <option>Employment</option>
+    <option>Rental</option>
+    <option>Service</option>
+  </select>
 
-<label>Party 2</label>
-<input type="text" id="party2">
+  <label>Start Date</label>
+  <input type="date" id="date">
 
-<label>Start Date</label>
-<input type="date" id="start">
+  <label>Duration</label>
+  <input id="duration">
 
-<label>Duration</label>
-<input type="text" id="duration">
+  <label>Payment (€)</label>
+  <input id="payment">
 
-<div id="puneFields">
-<label>Position</label>
-<input type="text" id="position">
-<label>Monthly Salary (€)</label>
-<input type="number" id="salary">
+  <!-- OPTIONAL CLAUSES -->
+  <div class="checkbox">
+    <input type="checkbox" id="confidentiality">
+    <label>Confidentiality Clause</label>
+  </div>
+
+  <div class="checkbox">
+    <input type="checkbox" id="termination">
+    <label>Termination Clause</label>
+  </div>
+
+  <div class="checkbox">
+    <input type="checkbox" id="liability">
+    <label>Liability Clause</label>
+  </div>
+
+  <div class="checkbox">
+    <input type="checkbox" id="governing">
+    <label>Governing Law Clause</label>
+  </div>
+
+  <div class="checkbox">
+    <input type="checkbox" id="extra">
+    <label>Additional Terms Section</label>
+  </div>
+
+  <button class="primary" onclick="generate()">Generate Contract</button>
+  <button onclick="downloadPDF()">Download PDF</button>
+
 </div>
 
-<div id="qiraFields" class="hidden">
-<label>Property Address</label>
-<input type="text" id="property">
-<label>Monthly Rent (€)</label>
-<input type="number" id="rent">
-</div>
-
-<div id="sherbimFields" class="hidden">
-<label>Type of Service</label>
-<input type="text" id="service">
-<label>Total Payment (€)</label>
-<input type="number" id="payment">
-</div>
-
-<label>Additional Terms</label>
-<textarea id="terms"></textarea>
-
-<button onclick="generateContract()">Preview Contract</button>
-<button onclick="downloadPDF()">Download PDF</button>
-
-</div>
-
+<!-- PREVIEW -->
 <div class="preview" id="preview">
-<h2>Contract Preview</h2>
-<p>Fill in the form and click Preview Contract</p>
+  <h2>Contract Preview</h2>
 </div>
 
 </div>
 </div>
 
 <script>
-let contractID="";
-let contractPlainText="";
+let text="";
+let id="CTR-"+Date.now();
 
-function generateID(){
-const year=new Date().getFullYear();
-const random=Math.floor(100000+Math.random()*900000);
-return `CTR-${year}-${random}`;
+function generate(){
+
+const p1=document.getElementById("p1").value;
+const p2=document.getElementById("p2").value;
+const payment=document.getElementById("payment").value;
+const date=document.getElementById("date").value;
+const duration=document.getElementById("duration").value;
+
+let contract=`<h2>CONTRACT AGREEMENT</h2>
+<p><b>${p1}</b> and <b>${p2}</b></p>
+<p>Date: ${date}</p>
+<p>Duration: ${duration}</p>
+<p>Payment: €${payment}</p>`;
+
+if(document.getElementById("confidentiality").checked){
+contract+=`<hr><p><b>Confidentiality:</b> Both parties agree to maintain strict confidentiality regarding all business information, data, documents, pricing, strategies, and any other sensitive material shared during the course of this agreement. Neither party shall disclose, share, publish, or use such information for any purpose outside the scope of this contract without prior written consent. This obligation remains valid during and after termination of the agreement.</p>`;
 }
 
-function switchTemplate(){
-document.getElementById("puneFields").classList.add("hidden");
-document.getElementById("qiraFields").classList.add("hidden");
-document.getElementById("sherbimFields").classList.add("hidden");
-document.getElementById(document.getElementById("type").value+"Fields").classList.remove("hidden");
+if(document.getElementById("termination").checked){
+contract+=`<hr><p><b>Termination:</b> This agreement may be terminated by either party with written notice as specified in the contract terms. Immediate termination may occur in the event of a material breach, violation of obligations, fraud, or unlawful activity. Upon termination, both parties must settle all outstanding obligations, return confidential materials, and cease all use of shared resources or intellectual property related to this agreement.</p>`;
 }
 
-function generateContract(){
-
-const company=document.getElementById("company").value.trim();
-const party1=document.getElementById("party1").value.trim();
-const party2=document.getElementById("party2").value.trim();
-const start=document.getElementById("start").value;
-const duration=document.getElementById("duration").value.trim();
-
-if(!company || !party1 || !party2){
-alert("Plotëso fushat kryesore!");
-return;
+if(document.getElementById("liability").checked){
+contract+=`<hr><p><b>Liability:</b> Neither party shall be held liable for any indirect, incidental, special, or consequential damages arising from the performance or failure to perform under this agreement. Each party assumes responsibility for its own actions and obligations. Liability shall be limited to the total amount paid under this contract, unless otherwise required by applicable law or proven gross negligence or intentional misconduct.</p>`;
 }
 
-contractID=generateID();
-
-let body="";
-const type=document.getElementById("type").value;
-
-if(type==="pune"){
-body=`
-<h2>KONTRATË PUNE</h2>
-<div class="meta"><b>Nr:</b> ${contractID}<br><b>Data:</b> ${start}</div>
-<hr>
-if(type==="employment"){
-body=`
-<h2>EMPLOYMENT CONTRACT</h2>
-<div class="meta"><b>No:</b> ${contractID}<br><b>Date:</b> ${start}</div>
-<hr>
-<p><b>Article 1 – Parties:</b> This contract is concluded between ${party1} and ${party2}.</p>
-<p><b>Article 2 – Position:</b> ${position.value}</p>
-<p><b>Article 3 – Salary:</b> ${salary.value} € per month.</p>
-<p><b>Article 4 – Duration:</b> ${duration}</p>
-<p><b>Article 5 – Obligations:</b> Both parties agree to comply with applicable laws and regulations.</p>
-`;
+if(document.getElementById("governing").checked){
+contract+=`<hr><p><b>Governing Law:</b> This agreement shall be governed and interpreted in accordance with the laws and legal regulations of the jurisdiction agreed upon by both parties. Any disputes arising from or related to this contract shall be resolved under the applicable courts or arbitration systems within that jurisdiction. Both parties agree to submit to the legal authority of the selected governing region.</p>`;
 }
 
-if(type==="rental"){
-body=`
-<h2>RENTAL AGREEMENT</h2>
-<div class="meta"><b>No:</b> ${contractID}<br><b>Date:</b> ${start}</div>
-<hr>
-<p><b>Article 1 – Parties:</b> ${party1} (Landlord) and ${party2} (Tenant).</p>
-<p><b>Article 2 – Property:</b> ${property.value}</p>
-<p><b>Article 3 – Payment:</b> ${rent.value} € per month.</p>
-<p><b>Article 4 – Duration:</b> ${duration}</p>
-<p><b>Article 5 – Obligations:</b> The tenant agrees to maintain the property in good condition as per agreement.</p>
-`;
+if(document.getElementById("extra").checked){
+contract+=`<hr><p><b>Additional Terms:</b>Any additional terms, modifications, or special conditions agreed upon by both parties shall be considered part of this contract when documented in writing. Verbal agreements shall not be considered legally binding unless confirmed in written form. Both parties agree that this section may include custom conditions related to payments, delivery, timelines, or responsibilities specific to the nature of this agreement.</p>`;
 }
 
-if(type==="service"){
-body=`
-<h2>SERVICE AGREEMENT</h2>
-<div class="meta"><b>No:</b> ${contractID}<br><b>Date:</b> ${start}</div>
-<hr>
-<p><b>Article 1 – Parties:</b> ${party1} and ${party2}</p>
-<p><b>Article 2 – Service:</b> ${service.value}</p>
-<p><b>Article 3 – Payment:</b> ${payment.value} €</p>
-<p><b>Article 4 – Term:</b> ${duration}</p>
-<p><b>Article 5 – Responsibilities:</b> The service provider guarantees professional quality of service.</p>
-`;
+document.getElementById("preview").innerHTML=contract;
+
+text=document.getElementById("preview").innerText;
 }
 
-const terms=document.getElementById("terms").value;
-
-document.getElementById("preview").innerHTML=`
-<h2>${company}</h2>
-${body}
-<hr>
-<p><b>Kushte Shtesë:</b><br>${terms}</p>
-<div class="signature">
-<div>_________________<br>${party1}</div>
-<div>_________________<br>${party2}</div>
-</div>
-`;
-
-contractPlainText=document.getElementById("preview").innerText;
-}
-
-async function downloadPDF(){
-if(!contractPlainText){
-alert("Gjenero kontratën!");
-return;
-}
+function downloadPDF(){
 
 const {jsPDF}=window.jspdf;
 const doc=new jsPDF();
+
 doc.setFont("times");
-doc.setFontSize(18);
-doc.text("Enterprise Legal Document",105,20,null,null,"center");
-doc.line(20,25,190,25);
+doc.setFontSize(16);
+doc.text("Contract Document",105,20,null,null,"center");
 
-doc.setFontSize(12);
-const lines=doc.splitTextToSize(contractPlainText,170);
-doc.text(lines,20,35);
+doc.setFontSize(11);
+doc.text(doc.splitTextToSize(text,170),20,35);
 
-doc.save(contractID+".pdf");
+doc.save(id+".pdf");
 }
 </script>
 
