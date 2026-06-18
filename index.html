@@ -257,37 +257,42 @@ body=`
 <h2>KONTRATË PUNE</h2>
 <div class="meta"><b>Nr:</b> ${contractID}<br><b>Data:</b> ${start}</div>
 <hr>
-<p><b>Neni 1 – Palët:</b> Kjo kontratë lidhet ndërmjet ${party1} dhe ${party2}.</p>
-<p><b>Neni 2 – Pozita:</b> ${position.value}</p>
-<p><b>Neni 3 – Paga:</b> ${salary.value} € në muaj.</p>
-<p><b>Neni 4 – Kohëzgjatja:</b> ${duration}</p>
-<p><b>Neni 5 – Detyrimet:</b> Palët angazhohen të respektojnë legjislacionin në fuqi.</p>
+if(type==="employment"){
+body=`
+<h2>EMPLOYMENT CONTRACT</h2>
+<div class="meta"><b>No:</b> ${contractID}<br><b>Date:</b> ${start}</div>
+<hr>
+<p><b>Article 1 – Parties:</b> This contract is concluded between ${party1} and ${party2}.</p>
+<p><b>Article 2 – Position:</b> ${position.value}</p>
+<p><b>Article 3 – Salary:</b> ${salary.value} € per month.</p>
+<p><b>Article 4 – Duration:</b> ${duration}</p>
+<p><b>Article 5 – Obligations:</b> Both parties agree to comply with applicable laws and regulations.</p>
 `;
 }
 
-if(type==="qira"){
+if(type==="rental"){
 body=`
-<h2>KONTRATË QIRAJE</h2>
-<div class="meta"><b>Nr:</b> ${contractID}<br><b>Data:</b> ${start}</div>
+<h2>RENTAL AGREEMENT</h2>
+<div class="meta"><b>No:</b> ${contractID}<br><b>Date:</b> ${start}</div>
 <hr>
-<p><b>Neni 1 – Palët:</b> ${party1} (Pronari) dhe ${party2} (Qiramarrësi).</p>
-<p><b>Neni 2 – Prona:</b> ${property.value}</p>
-<p><b>Neni 3 – Pagesa:</b> ${rent.value} € në muaj.</p>
-<p><b>Neni 4 – Kohëzgjatja:</b> ${duration}</p>
-<p><b>Neni 5 – Detyrimet:</b> Qiramarrësi ruan pronën sipas marrëveshjes.</p>
+<p><b>Article 1 – Parties:</b> ${party1} (Landlord) and ${party2} (Tenant).</p>
+<p><b>Article 2 – Property:</b> ${property.value}</p>
+<p><b>Article 3 – Payment:</b> ${rent.value} € per month.</p>
+<p><b>Article 4 – Duration:</b> ${duration}</p>
+<p><b>Article 5 – Obligations:</b> The tenant agrees to maintain the property in good condition as per agreement.</p>
 `;
 }
 
-if(type==="sherbim"){
+if(type==="service"){
 body=`
-<h2>KONTRATË SHËRBIMI</h2>
-<div class="meta"><b>Nr:</b> ${contractID}<br><b>Data:</b> ${start}</div>
+<h2>SERVICE AGREEMENT</h2>
+<div class="meta"><b>No:</b> ${contractID}<br><b>Date:</b> ${start}</div>
 <hr>
-<p><b>Neni 1 – Palët:</b> ${party1} dhe ${party2}</p>
-<p><b>Neni 2 – Shërbimi:</b> ${service.value}</p>
-<p><b>Neni 3 – Pagesa:</b> ${payment.value} €</p>
-<p><b>Neni 4 – Afati:</b> ${duration}</p>
-<p><b>Neni 5 – Përgjegjësitë:</b> Ofruesi garanton cilësi profesionale.</p>
+<p><b>Article 1 – Parties:</b> ${party1} and ${party2}</p>
+<p><b>Article 2 – Service:</b> ${service.value}</p>
+<p><b>Article 3 – Payment:</b> ${payment.value} €</p>
+<p><b>Article 4 – Term:</b> ${duration}</p>
+<p><b>Article 5 – Responsibilities:</b> The service provider guarantees professional quality of service.</p>
 `;
 }
 
